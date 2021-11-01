@@ -3,6 +3,13 @@
 #include "Parser.h"
 #include <assert.h>
 
+// FA.in structure:
+// states
+// alphabet
+// number of transitions followed by the transitions on separate lines
+// initial state
+// final states
+
 int main()
 {
     Parser* parser = new Parser("FA.in");
@@ -35,9 +42,3 @@ int main()
     return 0;
 }
 
-// FA.in structure:
-// states
-// alphabet
-// number of transitions followed by the transitions on separate lines
-// initial state
-// final states
