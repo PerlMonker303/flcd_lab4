@@ -21,15 +21,21 @@ private:
 	std::vector<Transition> transitions;
 	std::string initialState;
 	std::vector<std::string> finalStates;
+	std::string encounteredError = "";
 
 public:
 	Parser(std::string faPath);
 	void readFA();
+	bool verifySequence(std::string sequence);
+	std::string move(std::string state, std::string symbol);
 	void displayStates();
 	void displayAlphabet();
 	void displayTransitions();
 	void displayInitialState();
 	void displayFinalStates();
+
+	// getters
+	std::string getEncounteredError();
 
 	// M = (Q, sigma, delta, q0, F)
 };

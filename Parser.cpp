@@ -34,13 +34,71 @@ void Parser::readFA() {
 		tr.s1 = transitionVector[0];
 		tr.t = transitionVector[1];
 		tr.s2 = transitionVector[2];
+		// check if valid symbols
+		if (!Helper::findInVector(this->states, tr.s1)) {
+			this->encounteredError = "[Error: '" + tr.s1 + "' is not a valid state.]\n";
+			return;
+		}
+		if (!Helper::findInVector(this->states, tr.s2)) {
+			this->encounteredError = "[Error: '" + tr.s2 + "' is not a valid state.]\n";
+			return;
+		}
+		if (!Helper::findInVector(this->alphabet, tr.t)) {
+			this->encounteredError = "[Error: '" + tr.t + "' does not belong to the alphabet.]\n";
+			return;
+		}
+		// check if deterministic
+		if (this->move(tr.s1, tr.t) != "") {
+			this->encounteredError = "[Error: Finite Automation not deterministic.]\n";
+			return;
+		}
 		this->transitions.push_back(tr);
 	}
 
 	std::getline(file, this->initialState);
+	if (!Helper::findInVector(this->states, this->initialState)) {
+		this->encounteredError = "[Error: '" + this->initialState + "' is not a valid initial state.]\n";
+		return;
+	}
 
 	std::getline(file, finalStatesString);
 	this->finalStates = Helper::splitString(finalStatesString, ' ');
+	// check if valid
+	for (int i = 0; i < this->finalStates.size(); i++) {
+		if (!Helper::findInVector(this->states, this->finalStates[i])) {
+			this->encounteredError = "[Error: '" + this->finalStates[i] + "' is not a valid final state.]\n";
+			return;
+		}
+	}
+}
+
+bool Parser::verifySequence(std::string sequence) {
+	std::cout << "[Verifying sequence '" << sequence << "']\n";
+	std::string currentState = this->initialState;
+	for (int i = 0; i < sequence.size(); i++) {
+		std::cout << "(" << currentState << ", " << sequence.substr(i) << ")";
+		std::string nextState = this->move(currentState, std::string(1, sequence[i]));
+		if (nextState == "") {
+			std::cout << '\n';
+			return false;
+		}
+		std::cout << "|-";
+		currentState = nextState;
+	}
+	std::cout << "(" << currentState << ", epsilon)\n";
+	if (Helper::findInVector(this->finalStates, currentState)) {
+		return true;
+	}
+	return false;
+}
+
+std::string Parser::move(std::string state, std::string symbol) {
+	for (int i = 0; i < this->transitions.size(); i++) {
+		if (this->transitions[i].s1 == state && this->transitions[i].t == symbol) {
+			return this->transitions[i].s2;
+		}
+	}
+	return "";
 }
 
 void Parser::displayStates() {
@@ -85,4 +143,9 @@ void Parser::displayFinalStates() {
 	}
 	std::cout << "}\n";
 	std::cout << "[... done]\n";
+}
+
+// getters
+std::string Parser::getEncounteredError() {
+	return this->encounteredError;
 }
