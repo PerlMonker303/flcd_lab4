@@ -29,6 +29,12 @@
     <None Include="FA.in">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="FA_constants.in">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="FA_identifiers.in">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Parser.h">

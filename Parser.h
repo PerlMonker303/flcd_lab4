@@ -28,6 +28,7 @@ public:
 	void readFA();
 	bool verifySequence(std::string sequence);
 	std::string move(std::string state, std::string symbol);
+	bool checkTransitionExists(Transition t);
 	void displayStates();
 	void displayAlphabet();
 	void displayTransitions();

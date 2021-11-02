@@ -34,17 +34,21 @@ void Parser::readFA() {
 		tr.s1 = transitionVector[0];
 		tr.t = transitionVector[1];
 		tr.s2 = transitionVector[2];
+		// check if transition already in
+		if (this->checkTransitionExists(tr)) {
+			continue;
+		}
 		// check if valid symbols
 		if (!Helper::findInVector(this->states, tr.s1)) {
-			this->encounteredError = "[Error: '" + tr.s1 + "' is not a valid state.]\n";
+			this->encounteredError = "[Error: '" + tr.s1 + "' is not a valid state (in transition " + std::to_string(i + 1) + ").]\n";
 			return;
 		}
 		if (!Helper::findInVector(this->states, tr.s2)) {
-			this->encounteredError = "[Error: '" + tr.s2 + "' is not a valid state.]\n";
+			this->encounteredError = "[Error: '" + tr.s2 + "' is not a valid state (in transition " + std::to_string(i + 1) + ").]\n";
 			return;
 		}
 		if (!Helper::findInVector(this->alphabet, tr.t)) {
-			this->encounteredError = "[Error: '" + tr.t + "' does not belong to the alphabet.]\n";
+			this->encounteredError = "[Error: '" + tr.t + "' does not belong to the alphabet (in transition " + std::to_string(i + 1) + ").]\n";
 			return;
 		}
 		// check if deterministic
@@ -74,6 +78,12 @@ void Parser::readFA() {
 
 bool Parser::verifySequence(std::string sequence) {
 	std::cout << "[Verifying sequence '" << sequence << "']\n";
+	if (sequence == "") {
+		if (Helper::findInVector(this->finalStates, this->initialState)) {
+			return true;
+		}
+		return false;
+	}
 	std::string currentState = this->initialState;
 	for (int i = 0; i < sequence.size(); i++) {
 		std::cout << "(" << currentState << ", " << sequence.substr(i) << ")";
@@ -99,6 +109,15 @@ std::string Parser::move(std::string state, std::string symbol) {
 		}
 	}
 	return "";
+}
+
+bool Parser::checkTransitionExists(Transition t) {
+	for (int i = 0; i < this->transitions.size(); i++) {
+		if (transitions[i].s1 == t.s1 && transitions[i].t == t.t && transitions[i].s2 == t.s2) {
+			return true;
+		}
+	}
+	return false;
 }
 
 void Parser::displayStates() {

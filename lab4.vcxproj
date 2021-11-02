@@ -145,6 +145,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="FA.in" />
+    <None Include="FA_constants.in" />
+    <None Include="FA_identifiers.in" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Helper.h" />
